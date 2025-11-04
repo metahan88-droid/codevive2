@@ -46,6 +46,8 @@ git push -u origin main
 4. **Branch**를 **main** 선택, 폴더를 **/build** 선택
 5. **Save** 클릭
 
+> ⚠️ GitHub Pages 설정 화면에 `/build` 옵션이 보이지 않으면, GitHub가 아직 정적 산출물을 인식하지 못한 상태입니다. 이 경우 **방법 2**(GitHub Actions)를 사용하세요.
+
 #### 방법 2: GitHub Actions 사용 (자동 빌드)
 
 1. `.github/workflows/deploy.yml` 파일을 생성합니다:
@@ -57,31 +59,53 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          
+          node-version: 18
+          cache: "npm"
+
       - name: Install dependencies
         run: npm install
-        
-      - name: Build
+
+      - name: Build project
         run: npm run build
-        
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          path: build
+
+  deploy:
+    needs: build-and-deploy
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
-2. 코드를 푸시하면 자동으로 빌드 및 배포됩니다
+2. 코드를 푸시하면 자동으로 빌드 및 배포됩니다. GitHub Pages 설정에서 **Source → GitHub Actions**가 선택되어 있는지 확인하세요.
 
 ### 5단계: 사이트 확인
 

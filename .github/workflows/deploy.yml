@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 ```yaml
+=======
+>>>>>>> f4d1e91 (Update content)
 name: Deploy to GitHub Pages
 
 on:
@@ -49,3 +52,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+<<<<<<< HEAD
+=======
+
+>>>>>>> f4d1e91 (Update content)
