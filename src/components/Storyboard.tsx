@@ -53,8 +53,7 @@ export function Storyboard() {
       skills: ["인터랙션", "애니메이션", "UX"],
       imageUrl: "https://images.unsplash.com/photo-1625574199526-97cdca86bcea?w=500&h=300&fit=crop",
       accentColor: 'red' as const,
-            link: "LM2.HTML"
-
+      link: "LM2.HTML"
     },
     {
       title: "퀴즈",
