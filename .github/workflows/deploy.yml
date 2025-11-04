@@ -28,7 +28,10 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Fix permissions
+        run: chmod -R +x node_modules/.bin
 
       - name: Build project
         run: npm run build
